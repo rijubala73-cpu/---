@@ -9,8 +9,8 @@
 body{
     margin:0;
     font-family:Segoe UI;
-    overflow:hidden;
     height:100vh;
+    overflow:hidden;
     background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
     color:white;
     display:flex;
@@ -18,20 +18,6 @@ body{
     align-items:center;
 }
 
-/* Splash */
-#splash{
-    position:fixed;
-    width:100%;
-    height:100%;
-    background:linear-gradient(135deg,#000428,#004e92);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    flex-direction:column;
-    z-index:999;
-}
-
-/* Glass */
 .glass{
     background:rgba(255,255,255,0.08);
     backdrop-filter:blur(12px);
@@ -42,7 +28,6 @@ body{
     width:85%;
 }
 
-/* Input */
 input{
     padding:10px;
     width:80%;
@@ -51,7 +36,6 @@ input{
     text-align:center;
 }
 
-/* Button */
 button{
     padding:12px 20px;
     border:none;
@@ -60,72 +44,24 @@ button{
     cursor:pointer;
     background:linear-gradient(45deg,#ff512f,#dd2476);
     color:white;
-    font-size:15px;
 }
 
-/* Main hidden */
 #main{
     display:none;
 }
 
-/* Title */
 .title{
-    font-size:32px;
+    font-size:30px;
     background:linear-gradient(90deg,#ffdf40,#ff4ecd,#40e0ff);
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
-    animation:glow 2s infinite alternate;
-}
-
-@keyframes glow{
-    from{transform:scale(1);}
-    to{transform:scale(1.05);}
-}
-
-/* Canvas */
-canvas{
-    position:absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    pointer-events:none;
-}
-
-/* Flash */
-#flash{
-    position:fixed;
-    width:100%;
-    height:100%;
-    background:white;
-    opacity:0;
-    z-index:998;
-}
-
-/* Shake */
-.shake{animation:shake 0.3s;}
-@keyframes shake{
-    0%{transform:translate(0,0);}
-    25%{transform:translate(5px,-5px);}
-    50%{transform:translate(-5px,5px);}
-    75%{transform:translate(5px,5px);}
-    100%{transform:translate(0,0);}
 }
 </style>
 </head>
 
 <body>
 
-<!-- SPLASH -->
-<div id="splash">
-    <h1>✨ Riju AI Celebration ✨</h1>
-    <p>Loading...</p>
-</div>
-
-<div id="flash"></div>
-<canvas id="fireworks"></canvas>
-
-<!-- INPUT SCREEN -->
+<!-- INPUT -->
 <div id="startScreen" class="glass">
     <h2>তোমার নাম লিখো 🎉</h2>
     <input id="nameInput" placeholder="Enter your name">
@@ -133,7 +69,7 @@ canvas{
     <button onclick="go()">Go Ahead 🚀</button>
 </div>
 
-<!-- MAIN SCREEN -->
+<!-- MAIN -->
 <div id="main" class="glass">
     <h1 class="title">✨ শুভ নববর্ষ ✨</h1>
 
@@ -142,120 +78,38 @@ canvas{
 
     <button onclick="share()">Share 🔗</button>
 
-    <p><small>thanks by Utsa bala Riju</small></p>
+    <small>thanks by Utsa bala Riju</small>
 </div>
-
-<audio id="music" loop>
-<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5c8d1c1b7a.mp3">
-</audio>
 
 <script>
 
-/* splash hide */
-setTimeout(()=>document.getElementById("splash").style.display="none",2000);
+/* START */
+function go(){
+    let name = document.getElementById("nameInput").value;
 
-/* fireworks */
-let canvas=document.getElementById("fireworks");
-let ctx=canvas.getContext("2d");
-canvas.width=innerWidth;
-canvas.height=innerHeight;
+    if(name.trim() === ""){
+        name = "Friend";
+    }
 
-let particles=[];
+    document.getElementById("startScreen").style.display="none";
+    document.getElementById("main").style.display="block";
 
-function fire(x,y){
-for(let i=0;i<80;i++){
-particles.push({
-x,y,
-angle:Math.random()*2*Math.PI,
-speed:Math.random()*6,
-alpha:1,
-decay:Math.random()*0.02,
-color:`hsl(${Math.random()*360},100%,60%)`
-});
-}}
+    document.getElementById("wish").innerText =
+    `শুভ নববর্ষ, ${name} ✨`;
 
-function animate(){
-ctx.fillStyle="rgba(0,0,0,0.25)";
-ctx.fillRect(0,0,canvas.width,canvas.height);
-
-particles.forEach((p,i)=>{
-p.x+=Math.cos(p.angle)*p.speed;
-p.y+=Math.sin(p.angle)*p.speed;
-p.alpha-=p.decay;
-
-ctx.globalAlpha=p.alpha;
-ctx.beginPath();
-ctx.fillStyle=p.color;
-ctx.arc(p.x,p.y,2,0,Math.PI*2);
-ctx.fill();
-
-if(p.alpha<=0)particles.splice(i,1);
-});
-
-requestAnimationFrame(animate);
-}
-animate();
-
-/* confetti */
-function confetti(){
-for(let i=0;i<30;i++){
-let d=document.createElement("div");
-d.style.position="absolute";
-d.style.left=Math.random()*100+"%";
-d.style.top="-10px";
-d.style.width="8px";
-d.style.height="8px";
-d.style.background=`hsl(${Math.random()*360},100%,60%)`;
-d.style.animation="fall 3s linear";
-document.body.appendChild(d);
-setTimeout(()=>d.remove(),3000);
-}}
-
-let style=document.createElement("style");
-style.innerHTML=`@keyframes fall{to{transform:translateY(110vh) rotate(360deg);}}`;
-document.head.appendChild(style);
-
-/* effects */
-function effect(){
-document.body.classList.add("shake");
-document.getElementById("flash").style.opacity=0.8;
-setTimeout(()=>{
-document.body.classList.remove("shake");
-document.getElementById("flash").style.opacity=0;
-},300);
-}
-
-/* AI poem */
-function poem(name){
-return `প্রিয় ${name},
+    document.getElementById("msg").innerText =
+    `প্রিয় ${name},
 নতুন বছর তোমার জীবনে আনুক সুখ, শান্তি ও সাফল্য ✨`;
 }
 
-/* START */
-function go(){
-let name=document.getElementById("nameInput").value||"Friend";
-
-document.getElementById("startScreen").style.display="none";
-document.getElementById("main").style.display="block";
-
-document.getElementById("wish").innerText=`শুভ নববর্ষ, ${name} ✨`;
-document.getElementById("msg").innerText=poem(name);
-
-document.getElementById("music").play().catch(()=>{});
-
-setInterval(()=>{
-fire(Math.random()*innerWidth,Math.random()*innerHeight/2);
-confetti();
-effect();
-},700);
-}
-
-/* SHARE */
+/* SHARE FIXED */
 function share(){
-let name=document.getElementById("nameInput").value||"Friend";
-let link=window.location.href+"?name="+encodeURIComponent(name);
-navigator.clipboard.writeText(link);
-alert("Link copied 🔗");
+    let name = document.getElementById("wish").innerText.split(",")[1] || "Friend";
+
+    let link = window.location.href + "?name=" + encodeURIComponent(name.trim());
+    navigator.clipboard.writeText(link);
+
+    alert("Link copied 🔗");
 }
 </script>
 
